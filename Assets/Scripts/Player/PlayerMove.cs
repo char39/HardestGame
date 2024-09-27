@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     private Rigidbody2D rb;
-
+    
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -14,6 +14,7 @@ public class PlayerMove : MonoBehaviour
     {
         GetPlayerMoveKeyInput();
         SetPlayerMoveVelocity();
+        state = GetPlayerMoveState();
     }
 
     private void OnDrawGizmos()
@@ -33,12 +34,17 @@ public class PlayerMove : MonoBehaviour
     private KeyCode leftKey = KeyCode.A;
     private KeyCode rightKey = KeyCode.D;
 
+    private KeyCode upAKey = KeyCode.UpArrow;
+    private KeyCode downAKey = KeyCode.DownArrow;
+    private KeyCode leftAKey = KeyCode.LeftArrow;
+    private KeyCode rightAKey = KeyCode.RightArrow;
+
     public int up;
     public int down;
     public int left;
     public int right;
 
-    internal float walkSpeed = 6.0f;
+    public float moveSpeed = 3.9f;
 
     public bool IsMoveStop = false;
 
@@ -50,15 +56,23 @@ public class PlayerMove : MonoBehaviour
         leftKey = left;
         rightKey = right;
     }
+    /// <summary> 플레이어의 이동 키를 설정함. </summary>
+    public void UpdateArrowKeySettings(KeyCode up, KeyCode down, KeyCode left, KeyCode right)
+    {
+        upAKey = up;
+        downAKey = down;
+        leftAKey = left;
+        rightAKey = right;
+    }
     /// <summary> 플레이어의 이동 키 입력을 받음. </summary>
     private void GetPlayerMoveKeyInput()
     {
         if (!IsMoveStop)
         {
-            up = Input.GetKey(upKey) ? 1 : 0;                   // ↑ 키를 누르면 1, 아니면 0
-            down = Input.GetKey(downKey) ? -1 : 0;              // ↓ 키를 누르면 -1, 아니면 0
-            left = Input.GetKey(leftKey) ? -1 : 0;              // ← 키를 누르면 -1, 아니면 0
-            right = Input.GetKey(rightKey) ? 1 : 0;             // → 키를 누르면 1, 아니면 0
+            up = Input.GetKey(upKey) || Input.GetKey(upAKey) ? 1 : 0;                     // ↑ 키를 누르면 1, 아니면 0
+            down = Input.GetKey(downKey) || Input.GetKey(downAKey) ? -1 : 0;              // ↓ 키를 누르면 -1, 아니면 0
+            left = Input.GetKey(leftKey) || Input.GetKey(leftAKey) ? -1 : 0;              // ← 키를 누르면 -1, 아니면 0
+            right = Input.GetKey(rightKey) || Input.GetKey(rightAKey) ? 1 : 0;            // → 키를 누르면 1, 아니면 0
         }
         else
         {
@@ -68,7 +82,7 @@ public class PlayerMove : MonoBehaviour
     /// <summary> 플레이어의 이동 방향과 속도를 설정함. </summary>
     private void SetPlayerMoveVelocity()
     {
-        float speed = walkSpeed;
+        float speed = moveSpeed;
 
         bool boxup = GetGroundBoxCastSelect(transform.position, Vector2.up);          // true면 움직일 수 있음
         bool boxdown = GetGroundBoxCastSelect(transform.position, Vector2.down);
@@ -88,7 +102,7 @@ public class PlayerMove : MonoBehaviour
         else                                                            // 상하좌우 단방향
         {
             if (GetGroundBoxCast())                                         // 충돌 없으면 이동 가능
-                rb.velocity = GetDirNormalVector() * speed;
+                rb.velocity = GetDirVector() * speed;
             else                                                            // 충돌 있으면 이동 불가능
                 rb.velocity = Vector2.zero;
         }
@@ -106,29 +120,45 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+    /// <summary> 플레이어의 이동 상태를 반환함. </summary>
+    private State GetPlayerMoveState()
+    {
+        if (rb.velocity.y > 0) return State.UP;
+        else if (rb.velocity.y < 0) return State.DOWN;
+        else if (rb.velocity.x > 0) return State.RIGHT;
+        else if (rb.velocity.x < 0) return State.LEFT;
+        else
+        {
+            if (GetDirVector().y > 0) return State.UP;
+            else if (GetDirVector().y < 0) return State.DOWN;
+            else if (GetDirVector().x > 0) return State.RIGHT;
+            else if (GetDirVector().x < 0) return State.LEFT;
+            else return state;
+        }
+    }
 
     /// <summary> 플레이어의 이동 방향을 정규 벡터로 반환함. </summary>
     private Vector2 GetDirNormalVector() => new Vector2(right + left, up + down).normalized;
     /// <summary> 플레이어의 이동 방향을 벡터로 반환함. </summary>
     private Vector2 GetDirVector() => new(right + left, up + down);
     /// <summary> 플레이어 Pivot의 중심을 기준으로 Ray Origin 위치를 반환. </summary>
-    private Vector2 GetlocalPivotPos(Vector2 pivot) => pivot + GetDirVector() * 0.1f;
+    private Vector2 GetlocalPivotPos(Vector2 pivot) => pivot + GetDirVector() * 0.2f;
     /// <summary> 플레이어의 이동에 따라 Ray Origin 위치를 반환. </summary>
     private Vector2 GetRayOriginPos(Vector2 pivot)
     {
         if (GetDirVector() == Vector2.zero)
         {
-            if (state == State.UP) return pivot + Vector2.up * 0.1f;
-            else if (state == State.DOWN) return pivot + Vector2.down * 0.1f;
-            else if (state == State.RIGHT) return pivot + Vector2.right * 0.1f;
-            else if (state == State.LEFT) return pivot + Vector2.left * 0.1f;
+            if (state == State.UP) return pivot + Vector2.up * 0.2f;
+            else if (state == State.DOWN) return pivot + Vector2.down * 0.2f;
+            else if (state == State.RIGHT) return pivot + Vector2.right * 0.2f;
+            else if (state == State.LEFT) return pivot + Vector2.left * 0.2f;
             else return Vector2.zero;
         }
         else
             return GetlocalPivotPos(pivot);
     }
     /// <summary> 플레이어의 BoxCast Size를 반환. </summary>
-    private Vector2 GetBoxCastSize() => new(0.75f, 0.75f);
+    private Vector2 GetBoxCastSize() => new(0.48f, 0.48f);
 
 
     /// <summary> 플레이어의 BoxCol부터 이동하는 방향의 BoxCast 충돌 여부를 반환. </summary>
@@ -141,7 +171,7 @@ public class PlayerMove : MonoBehaviour
     /// <summary> 플레이어의 BoxCol부터 원하는 방향의 BoxCast 충돌 여부를 반환. </summary>
     private bool GetGroundBoxCastSelect(Vector2 pivot, Vector2 direction)
     {
-        Vector2 origin = pivot + direction * 0.1f;
+        Vector2 origin = pivot + direction * 0.2f;
         RaycastHit2D hit = Physics2D.BoxCast(origin, GetBoxCastSize(), 0, Vector2.zero, 0, wallMask);
         return hit.collider == null;    // true면 움직일 수 있음.
     }
@@ -151,10 +181,10 @@ public class PlayerMove : MonoBehaviour
     private void DrawGroundBoxCast()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireCube((Vector2)transform.position + Vector2.up * 0.1f, GetBoxCastSize());
-        Gizmos.DrawWireCube((Vector2)transform.position + Vector2.down * 0.1f, GetBoxCastSize());
-        Gizmos.DrawWireCube((Vector2)transform.position + Vector2.left * 0.1f, GetBoxCastSize());
-        Gizmos.DrawWireCube((Vector2)transform.position + Vector2.right * 0.1f, GetBoxCastSize());
+        Gizmos.DrawWireCube((Vector2)transform.position + Vector2.up * 0.2f, GetBoxCastSize());
+        Gizmos.DrawWireCube((Vector2)transform.position + Vector2.down * 0.2f, GetBoxCastSize());
+        Gizmos.DrawWireCube((Vector2)transform.position + Vector2.left * 0.2f, GetBoxCastSize());
+        Gizmos.DrawWireCube((Vector2)transform.position + Vector2.right * 0.2f, GetBoxCastSize());
     }
     /// <summary> 플레이어의 현재 바라보는 방향의 BoxCast를 그림. </summary>
     private void DrawGroundBoxCastLookAt()

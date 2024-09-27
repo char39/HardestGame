@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Coin
   - Bullet
+  - Wall
   layers:
   - Default
   - TransparentFX
