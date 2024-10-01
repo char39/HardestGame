@@ -34,6 +34,7 @@ public class BulletMoveCustom_Square : MonoBehaviour
                 {
                     transform.position = new Vector2(maxCoordination, transform.position.y);
                     currentDirection = Clockwise ? Direction.Down : Direction.Up;
+                    velocity = Vector2.zero;
                 }
                 break;
 
@@ -43,6 +44,7 @@ public class BulletMoveCustom_Square : MonoBehaviour
                 {
                     transform.position = new Vector2(transform.position.x, maxCoordination);
                     currentDirection = Clockwise ? Direction.Right : Direction.Left;
+                    velocity = Vector2.zero;
                 }
                 break;
 
@@ -52,6 +54,7 @@ public class BulletMoveCustom_Square : MonoBehaviour
                 {
                     transform.position = new Vector2(minCoordination, transform.position.y);
                     currentDirection = Clockwise ? Direction.Up : Direction.Down;
+                    velocity = Vector2.zero;
                 }
                 break;
 
@@ -61,6 +64,7 @@ public class BulletMoveCustom_Square : MonoBehaviour
                 {
                     transform.position = new Vector2(transform.position.x, minCoordination);
                     currentDirection = Clockwise ? Direction.Left : Direction.Right;
+                    velocity = Vector2.zero;
                 }
                 break;
         }

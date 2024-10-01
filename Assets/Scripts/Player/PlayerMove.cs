@@ -89,7 +89,7 @@ public class PlayerMove : MonoBehaviour
         bool boxleft = GetGroundBoxCastSelect(transform.position, Vector2.left);
         bool boxright = GetGroundBoxCastSelect(transform.position, Vector2.right);
 
-        Vector2 dirNormal = GetDirNormalVector();
+        Vector2 dirNormal = GetDirVector(); // 이 게임에선 Normalize를 안씀.
 
         if (dirNormal.x > 0 && dirNormal.y > 0)                         // 오른쪽 위
             MoveInDirection(dirNormal, boxup, boxright, speed);

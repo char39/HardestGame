@@ -97,9 +97,8 @@ GameObject:
   - component: {fileID: 3009741507340050501}
   - component: {fileID: 626468221159588672}
   - component: {fileID: 68625205451780090}
-  - component: {fileID: 3816608377644945926}
   m_Layer: 0
-  m_Name: Bullet_Trigger
+  m_Name: Bullet_None
   m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -247,19 +246,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b9f76478d3f4d3197cd0700252b255, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3816608377644945926
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6407447196842228531}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3dc6af0b7018f47188f60afa1d8bdc79, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsHorizontal: 0
-  IsInverse: 0
-  speed: 5
-  velocity: {x: 0, y: 0}
