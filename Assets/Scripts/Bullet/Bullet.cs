@@ -7,10 +7,13 @@ public class Bullet : MonoBehaviour
         if (col.CompareTag(PlayerDamage.PlayerTag))
         {
             col.gameObject.TryGetComponent(out PlayerDamage playerDamage);
-            StartCoroutine(playerDamage.Disappear());
+            if (!playerDamage.IsDamage)
+            {
+                StartCoroutine(playerDamage.Disappear());
 
-            GameManager.Instance.RestartRoom();
-            GameManager.AddDeathCount();
+                GameManager.Instance.RestartRoom();
+                GameManager.AddDeathCount();
+            }
         }
     }
 }

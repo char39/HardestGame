@@ -11,6 +11,7 @@ public class PlayerDamage : MonoBehaviour
     private BoxCollider2D col;
     public const string PlayerTag = "Player";
     public bool IsAlphaZero = false;
+    public bool IsDamage = false;
 
     void Start()
     {
@@ -47,8 +48,8 @@ public class PlayerDamage : MonoBehaviour
     // 닿으면 스르르 사라지고 다사라지면 재시작.
     public IEnumerator Disappear()
     {
-        if (IsAlphaZero)
-            yield break;
+        if (IsDamage || IsAlphaZero) yield break;
+        IsDamage = true;
 
         TryGetComponent(out PlayerMove playerMove);
         playerMove.IsMoveStop = true;
@@ -59,7 +60,7 @@ public class PlayerDamage : MonoBehaviour
         float elapsed = 0f;
         float alpha = 0f;
 
-        while (elapsed < (duration * 0.25f))
+        while (elapsed < (duration * 0.15f))
         {
             elapsed += Time.deltaTime;
             sr.color = Color.Lerp(sr.color, new Color(origin.r, origin.g, origin.b, alpha), elapsed / duration);
@@ -68,5 +69,6 @@ public class PlayerDamage : MonoBehaviour
         }
 
         IsAlphaZero = true;
+        IsDamage = false;
     }
 }

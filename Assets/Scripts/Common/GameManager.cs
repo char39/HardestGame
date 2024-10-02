@@ -129,7 +129,7 @@ public partial class GameManager : MonoBehaviour
     {
         SentenceText.enabled = true;                // (Text) Sentence 활성화
 
-        SelectRoomIndex(9);
+        SelectRoomIndex(18);
         ApplyRoomNumText();                         // (Text) roomIndex 우상단 출력
         ApplySentenceText();                        // roomIndex와 동일한 값의 Sentence을 할당
         yield return new WaitForSeconds(2.0f);      // 2초 대기
