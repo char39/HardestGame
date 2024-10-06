@@ -6,7 +6,7 @@ public class BulletMoveCustom_LineTimePerfect : MonoBehaviour
 
     public bool IsHorizontal = false;
     public bool IsInverse = false;
-    private float speed;
+    public float speed;
     public Vector2 velocity;
 
     public float distance = 1f;

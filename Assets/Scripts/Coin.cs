@@ -22,6 +22,7 @@ public class Coin : MonoBehaviour
         if (col.CompareTag(PlayerDamage.PlayerTag))
         {
             GameManager.Instance.CollectCoin();
+            SoundManagement.Instance.PlayCoinCollected();
             this.sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, 0);
             this.sr_child.color = new Color(sr_child.color.r, sr_child.color.g, sr_child.color.b, 0);
             this.col.enabled = false;

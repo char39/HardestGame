@@ -11,8 +11,9 @@ public class Bullet : MonoBehaviour
             {
                 StartCoroutine(playerDamage.Disappear());
 
-                GameManager.Instance.RestartRoom();
+                GameManager.Instance.ResetCollectCoin();
                 GameManager.AddDeathCount();
+                SoundManagement.Instance.PlayDeath();
             }
         }
     }
