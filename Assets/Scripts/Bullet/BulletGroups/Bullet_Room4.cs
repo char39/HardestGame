@@ -11,8 +11,8 @@ public class Bullet_Room4 : MonoBehaviour
             rotationSpeed *= -1;
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        transform.Rotate(0, 0, -rotationSpeed * Time.fixedDeltaTime);
+        transform.Rotate(0, 0, -rotationSpeed * Time.deltaTime);
     }
 }

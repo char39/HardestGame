@@ -77,7 +77,6 @@ public class Bullet_Room9 : MonoBehaviour
                 break;
         }
 
-        // 로컬 좌표계를 월드 좌표계로 변환하여 이동
         velocity = tr.TransformDirection(localVelocity);
         rb.velocity = velocity;
     }

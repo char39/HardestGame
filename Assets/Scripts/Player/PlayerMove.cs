@@ -3,7 +3,30 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     private Rigidbody2D rb;
-    
+
+    internal enum State { UP, DOWN, LEFT, RIGHT }   // UP : Back(뒤), DOWN : Front(앞)
+    internal State state = State.DOWN;
+
+    private LayerMask wallMask;
+
+    private readonly KeyCode upKey = KeyCode.W;
+    private readonly KeyCode downKey = KeyCode.S;
+    private readonly KeyCode leftKey = KeyCode.A;
+    private readonly KeyCode rightKey = KeyCode.D;
+    private readonly KeyCode upAKey = KeyCode.UpArrow;
+    private readonly KeyCode downAKey = KeyCode.DownArrow;
+    private readonly KeyCode leftAKey = KeyCode.LeftArrow;
+    private readonly KeyCode rightAKey = KeyCode.RightArrow;
+
+    private int up;
+    private int down;
+    private int left;
+    private int right;
+
+    private const float moveSpeed = 3.9f;
+
+    public bool IsMoveStop = false;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -19,51 +42,12 @@ public class PlayerMove : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (transform == null) return;
+        if (transform == null)
+            return;
         DrawGroundBoxCast();
         DrawGroundBoxCastLookAt();
     }
 
-    internal enum State { UP, DOWN, LEFT, RIGHT }   // UP : Back(뒤), DOWN : Front(앞)
-    internal State state = State.DOWN;
-
-    private LayerMask wallMask;
-
-    private KeyCode upKey = KeyCode.W;
-    private KeyCode downKey = KeyCode.S;
-    private KeyCode leftKey = KeyCode.A;
-    private KeyCode rightKey = KeyCode.D;
-
-    private KeyCode upAKey = KeyCode.UpArrow;
-    private KeyCode downAKey = KeyCode.DownArrow;
-    private KeyCode leftAKey = KeyCode.LeftArrow;
-    private KeyCode rightAKey = KeyCode.RightArrow;
-
-    public int up;
-    public int down;
-    public int left;
-    public int right;
-
-    public float moveSpeed = 3.9f;
-
-    public bool IsMoveStop = false;
-
-    /// <summary> 플레이어의 이동 키를 설정함. </summary>
-    public void UpdateKeySettings(KeyCode up, KeyCode down, KeyCode left, KeyCode right)
-    {
-        upKey = up;
-        downKey = down;
-        leftKey = left;
-        rightKey = right;
-    }
-    /// <summary> 플레이어의 이동 키를 설정함. </summary>
-    public void UpdateArrowKeySettings(KeyCode up, KeyCode down, KeyCode left, KeyCode right)
-    {
-        upAKey = up;
-        downAKey = down;
-        leftAKey = left;
-        rightAKey = right;
-    }
     /// <summary> 플레이어의 이동 키 입력을 받음. </summary>
     private void GetPlayerMoveKeyInput()
     {
@@ -75,21 +59,19 @@ public class PlayerMove : MonoBehaviour
             right = Input.GetKey(rightKey) || Input.GetKey(rightAKey) ? 1 : 0;            // → 키를 누르면 1, 아니면 0
         }
         else
-        {
             up = down = left = right = 0;
-        }
     }
     /// <summary> 플레이어의 이동 방향과 속도를 설정함. </summary>
     private void SetPlayerMoveVelocity()
     {
         float speed = moveSpeed;
 
-        bool boxup = GetGroundBoxCastSelect(transform.position, Vector2.up);          // true면 움직일 수 있음
+        bool boxup = GetGroundBoxCastSelect(transform.position, Vector2.up);
         bool boxdown = GetGroundBoxCastSelect(transform.position, Vector2.down);
         bool boxleft = GetGroundBoxCastSelect(transform.position, Vector2.left);
         bool boxright = GetGroundBoxCastSelect(transform.position, Vector2.right);
 
-        Vector2 dirNormal = GetDirVector(); // 이 게임에선 Normalize를 안씀.
+        Vector2 dirNormal = GetDirVector();
 
         if (dirNormal.x > 0 && dirNormal.y > 0)                         // 오른쪽 위
             MoveInDirection(dirNormal, boxup, boxright, speed);
